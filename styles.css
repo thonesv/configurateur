@@ -1,0 +1,212 @@
+:not(:defined) > * {
+    display: none;
+  }
+  
+  html {
+    height: 100%;
+  }
+
+header{
+    background-color: #ffffff;
+    border-bottom: solid 2px #e3e3e3;
+}
+
+header .logo img{
+width: 150px;
+}
+
+.nav-menu {
+    font-weight: 600;
+    color: #959595;
+}
+
+.nav-menu span{
+    font-weight: 700;
+    color: #000000;
+}
+
+
+.custom-nav{
+  border-bottom: solid 2px #e3e3e3;
+}
+
+.custom-nav #border-innovations{
+  border-left: solid 2px #e3e3e3;
+}
+
+.custom-nav .nav-link {
+  color: inherit; /* Conserver la couleur par défaut du texte */
+  background-color: transparent; /* Pas de fond */
+  border: none; /* Pas de bordure */
+  padding: 0; /* Réduire le padding */
+  font-weight: 700;
+  color: #959595;
+}
+
+/* Modifier la couleur de l'onglet actif (si nécessaire) */
+.custom-nav .nav-link.active {
+  color: #000000; /* Remplacer par la couleur souhaitée */
+  background-color: transparent; /* Pas de fond */
+}
+
+
+.tab-pane-content {
+  padding: 30px;
+  border-bottom: solid 2px #e3e3e3;
+  
+}
+
+    /* Supprimer les styles par défaut de l'accordéon */
+    .accordion-item{
+      background-color: transparent !important;
+      color: inherit !important;
+      border: none !important;
+      box-shadow: none !important;
+  }
+
+
+
+    /* Supprimer les styles par défaut de l'accordéon */
+    .accordion-button {
+      background-color: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: inherit !important;
+  }
+
+
+
+
+/* Ensure the configurator section does not scroll */
+.configurateur {
+    position: relative;
+    height: 100vh; /* Take up full height of viewport */
+    overflow: hidden; /* Prevent overflow */
+  }
+  
+  /* Prevent scrolling on the model-viewer itself */
+  model-viewer {
+    height: 100%;
+    width: 100%;
+    display: block; /* Ensure it takes full width and height of its container */
+    background-color: #f8f8f8;
+  }
+  
+  /* Optional: You can add this to the container-fluid to control scrolling */
+  .container-fluid.g-0 {
+    overflow: hidden;
+    position: fixed;
+  }
+  
+  /* Fixing sideBar to stay visible and manage scroll in the rest of the page */
+  .side-bar {
+    overflow-y: auto; /* Allow scrolling in the sidebar if the content exceeds height */
+    height: 94vh;
+    background-color: #ffffff;
+    border-left:solid 2px #e3e3e3;
+  }
+
+  .rounded-image {
+    border-radius: 50%; /* Pour rendre l'image ronde */
+    width: 150px; /* Limite la taille de l'image à 100px de largeur max */
+    height: 150px; /* Limite la taille de l'image à 100px de hauteur max */
+    object-fit: cover; /* S'assure que l'image couvre bien l'espace tout en restant centrée */
+  }
+  
+  .section-title{
+    text-transform: uppercase;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 20px 0px;
+  }
+  
+  
+  .progress-bar {
+    display: block;
+    width: 33%;
+    height: 10%;
+    max-height: 2%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate3d(-50%, -50%, 0);
+    border-radius: 25px;
+    box-shadow: 0px 3px 10px 3px rgba(0, 0, 0, 0.5), 0px 0px 5px 1px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .progress-bar.hide {
+    visibility: hidden;
+    transition: visibility 0.3s;
+  }
+  
+  .update-bar {
+    background-color: rgba(255, 255, 255, 0.9);
+    width: 0%;
+    height: 100%;
+    border-radius: 25px;
+    float: left;
+    transition: width 0.3s;
+  }
+  
+  #ar-button {
+    background-image: url(ar_icon.png);
+    background-repeat: no-repeat;
+    background-size: 20px 20px;
+    background-position: 12px 50%;
+    background-color: #fff;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    bottom: 16px;
+    padding: 0px 16px 0px 40px;
+    font-family: Roboto Regular, Helvetica Neue, sans-serif;
+    font-size: 14px;
+    color:#4285f4;
+    height: 36px;
+    line-height: 36px;
+    border-radius: 18px;
+    border: 1px solid #DADCE0;
+  }
+  
+  #ar-button:active {
+    background-color: #E8EAED;
+  }
+  
+  #ar-button:focus {
+    outline: none;
+  }
+  
+  #ar-button:focus-visible {
+    outline: 1px solid #4285f4;
+  }
+  
+  @keyframes circle {
+    from { transform: translateX(-50%) rotate(0deg) translateX(50px) rotate(0deg); }
+    to   { transform: translateX(-50%) rotate(360deg) translateX(50px) rotate(-360deg); }
+  }
+  
+  @keyframes elongate {
+    from { transform: translateX(100px); }
+    to   { transform: translateX(-100px); }
+  }
+  
+  model-viewer > #ar-prompt {
+    position: absolute;
+    left: 50%;
+    bottom: 60px;
+    animation: elongate 2s infinite ease-in-out alternate;
+    display: none;
+  }
+  
+  model-viewer[ar-status="session-started"] > #ar-prompt {
+    display: block;
+  }
+  
+  model-viewer > #ar-prompt > img {
+    animation: circle 4s linear infinite;
+  }

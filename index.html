@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <title>Configurateur SPC</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">    
+    <!-- Main CSS -->
+    <link type="text/css" href="styles.css" rel="stylesheet"/>
+
+  </head>
+  <body>
+
+    <header class="menu col-12 py-2 sticky-top">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between">
+                    <!-- Logo à gauche --> 
+                    <div class="logo">
+                        <img src="logo.png" alt="Logo" class="img-fluid">
+                    </div>
+                    <!-- Texte centré -->
+                    <div class="nav-menu">
+                        <p class="m-0">Configurateur / <span>pour pompes Ø12/Ø15 SYNTEGON</span></p>
+                    </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="main">
+        <div class="container-fluid g-0">
+            <div class="row g-0">
+                <div class="configurateur col-8">            
+                    <model-viewer id="BOSCH" src="BOSCH.glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls tone-mapping="neutral" poster="poster.webp" shadow-intensity="1">
+                    <div class="progress-bar hide" slot="progress-bar">
+                        <div class="update-bar"></div>
+                    </div>
+                    <button slot="ar-button" id="ar-button">
+                        View in your space
+                    </button>
+                    <div id="ar-prompt">
+                        <img src="ar_hand_prompt.png">
+                    </div>
+                    
+                    <script type="module">
+                        const mv = document.querySelector("model-viewer#BOSCH");
+                        const cylindre = document.querySelectorAll("input[name='cylindre']");
+                        const boisseau = document.querySelectorAll("input[name='boisseau']");
+                        const attachement = document.querySelectorAll("input[name='attachement']");
+                    
+                        const variantsCylindre = {
+                            "silicone-poli": ["silicone-poli"],
+                            "ptfe-micro": ["ptfe-micro", "ecrou"],
+                            "silicone-micro": ["silicone-micro"],
+                            "ptfe-poli": ["ptfe-poli", "ecrou-1"],
+                        };
+                    
+                        const variantsBoisseau = {
+                            "boisseauDia": ["boisseauDia"],
+                            "boisseauRainure": ["boisseauRainure", "ecrouBoisseau"],
+                            "boisseau3": ["boisseau3"],
+                        };
+                    
+                        const variantsAttachement = {
+                            "attachement-haut-dia6.8": ["attachement-haut-dia6.8"],
+                            "attachement-haut-dia6": ["attachement-haut-dia6"],
+                        };
+                    
+                        mv.addEventListener("load", () => {
+                            function updateAlphaValue(material, alpha) {
+                                const pbr = material.pbrMetallicRoughness;
+                                const baseColor = pbr.baseColorFactor;
+                                baseColor[3] = alpha;
+                                pbr.setBaseColorFactor(baseColor);
+                            }
+                    
+                            function initializeDefaultVariant(variants, defaultVariant) {
+                                for (const variant in variants) {
+                                    variants[variant].forEach((materialName) => {
+                                        const material = mv.model.getMaterialByName(materialName);
+                                        if (material) {
+                                            updateAlphaValue(material, variant === defaultVariant ? 1 : 0);
+                                        }
+                                    });
+                                }
+                            }
+                    
+                            initializeDefaultVariant(variantsCylindre, "ptfe-micro");
+                            initializeDefaultVariant(variantsBoisseau, "boisseauDia");
+                            initializeDefaultVariant(variantsAttachement, "attachement-haut-dia6.8");
+                    
+                            // Fonction pour gérer le changement d'option
+                            function handleSelectionChange(variantType, variants) {
+                                return function(event) {
+                                    const selectedVariant = event.target.id;
+                    
+                                    Object.keys(variants).forEach((variant) => {
+                                        variants[variant].forEach((materialName) => {
+                                            const material = mv.model.getMaterialByName(materialName);
+                                            if (material) {
+                                                const alpha = (variant === selectedVariant) ? 1 : 0;
+                                                updateAlphaValue(material, alpha);
+                                            }
+                                        });
+                                    });
+                    
+                                    mv.model.updateMatrices();
+                                    mv.requestUpdate();
+                                };
+                            }
+                    
+                            // Écouter les événements pour chaque option de cylindre, boisseau et attachement
+                            cylindre.forEach(option => option.addEventListener("change", handleSelectionChange('cylindre', variantsCylindre)));
+                            boisseau.forEach(option => option.addEventListener("change", handleSelectionChange('boisseau', variantsBoisseau)));
+                            attachement.forEach(option => option.addEventListener("change", handleSelectionChange('attachement', variantsAttachement)));
+                        });
+                    </script>
+                    
+                    
+                    
+                    </model-viewer>
+                </div>
+
+                <div class="side-bar col-4">
+                    <div class="row g-0 menu-side-bar">
+                        <!-- Onglet Nos Standards -->
+                        <ul class="nav nav-tabs custom-nav" id="myTab" role="tablist">
+                            <li class="col-6 d-flex nav-item justify-content-center" role="presentation">
+                                <a class="nav-link active p-3" id="standards-tab" data-bs-toggle="tab" href="#standards" role="tab" aria-controls="standards" aria-selected="true">Nos Standards</a>
+                            </li>
+                            <!-- Onglet Nos Innovations -->
+                            <li class="col-6 d-flex nav-item justify-content-center" role="presentation" id="border-innovations">
+                                <a class="nav-link p-3" id="innovations-tab" data-bs-toggle="tab" href="#innovations" role="tab" aria-controls="innovations" aria-selected="false">Nos Innovations</a>
+                            </li>
+                        </ul>
+                
+                        <div class="tab-content" id="myTabContent">
+                            <!-- Tab 1: Nos Standards -->
+                            <div class="tab-pane fade show active" id="standards" role="tabpanel" aria-labelledby="standards-tab">
+                                <div class="tab-pane-content p-3">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div>
+                                                <label for="valeur" class="form-label">Indiquez la course du piston :</label>
+                                                <input type="number" class="form-control" id="valeur" placeholder="en mm">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="valeur" class="form-label">Indiquez le volume à doser :</label>
+                                                <input type="number" class="form-control" id="valeur" placeholder="en mL">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div>
+                                                <label for="valeur" class="form-label">Indiquez le diamètre du piston :</label>
+                                                <input type="number" class="form-control" id="valeur" placeholder="Ø en mm">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div>
+                                                <label for="valeur" class="form-label">Indiquez le diamètre du boisseau :</label>
+                                                <input type="number" class="form-control" id="valeur" placeholder="Ø en mm">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+
+                                <!-- Accordéon 1 (Indépendant) -->
+                                <div class="tab-pane-content p-3 accordion" id="accordionExampleThree">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingThree">
+                                            <button class="accordion-button custom-accordion-button p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                                Type de Boisseau et de l'attachement
+                                            </button>
+                                        </h2>
+                                        <div id="collapseThree" class="accordion-collapse collapse show" aria-labelledby="headingThree">
+                                            <div class="accordion-body">
+                                                <div class="row select">
+                                                    <div class="col-6 d-flex justify-content-center align-items-center">
+                                                        <div class="form-check text-center">
+                                                            <img src="BOISSEAU-TROU.png" alt="Boisseau Type X" class="d-block mb-2 rounded-image mx-auto">
+                                                            <input class="form-check-input" type="radio" name="boisseau" id="boisseauDia" checked>
+                                                            <label class="form-check-label" for="boisseauDia">Boisseau avec alésage</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6 d-flex justify-content-center align-items-center">
+                                                        <div class="form-check text-center">
+                                                            <img src="BOISSEAU-RAINURE.png" alt="Boisseau Type Y" class="d-block mb-2 rounded-image mx-auto">
+                                                            <input class="form-check-input" type="radio" name="boisseau" id="boisseauRainure">
+                                                            <label class="form-check-label" for="boisseauRainure">Boisseau avec rainure</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row select">
+                                                    <div class="col-6 d-flex justify-content-center align-items-center">
+                                                        <div class="form-check text-center">
+                                                            <img src="ATTACHEMENT 6.png" alt="Boisseau Type X" class="d-block mb-2 rounded-image mx-auto">
+                                                            <input class="form-check-input" type="radio" name="attachement" id="attachement-haut-dia6">
+                                                            <label class="form-check-label" for="attachement-haut-dia6">Attachement supérieur Ø6</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6 d-flex justify-content-center align-items-center">
+                                                        <div class="form-check text-center">
+                                                            <img src="ATTACHEMENT 6.8.png" alt="Boisseau Type Y" class="d-block mb-2 rounded-image mx-auto">
+                                                            <input class="form-check-input" type="radio" name="attachement" id="attachement-haut-dia6.8" checked>
+                                                            <label class="form-check-label" for="attachement-haut-dia6.8">Attachement supérieur Ø6.8</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Accordéon 2 (Indépendant) -->
+                                <div class="tab-pane-content p-3 accordion" id="accordionExampleOne">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingOne">
+                                            <button class="accordion-button custom-accordion-button p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                Type de connexion et finition du cylindre
+                                            </button>
+                                        </h2>
+                                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne">
+                                            <div class="accordion-body">
+                                                <div class="row select">
+                                                    <div class="col-6 d-flex justify-content-center align-items-center">
+                                                        <div class="form-check text-center">
+                                                            <img src="CYLINDRE-PTFE-micro.png" alt="Silicone Poli" class="d-block mb-2 rounded-image mx-auto">
+                                                            <input class="form-check-input" type="radio" name="cylindre" id="ptfe-micro" checked>
+                                                            <label class="form-check-label" for="ptfe-micro">Connexion PTFE & Finition microbillée</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6 d-flex justify-content-center align-items-center">
+                                                        <div class="form-check text-center">
+                                                            <img src="CYLINDRE-SILICONE-poli.png" alt="Silicone Poli" class="d-block mb-2 rounded-image mx-auto">
+                                                            <input class="form-check-input" type="radio" name="cylindre" id="silicone-poli">
+                                                            <label class="form-check-label" for="silicone-poli">Connexion silicone & Finition poli elec</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row select">
+                                                    <div class="col-6 d-flex justify-content-center align-items-center">
+                                                        <div class="form-check text-center">
+                                                            <img src="CYLINDRE-PTFE-poli.png" alt="Silicone Poli" class="d-block mb-2 rounded-image mx-auto">
+                                                            <input class="form-check-input" type="radio" name="cylindre" id="ptfe-poli">
+                                                            <label class="form-check-label" for="ptfe-poli">Connexion PTFE & Finition poli elec</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6 d-flex justify-content-center align-items-center">
+                                                        <div class="form-check text-center">
+                                                            <img src="CYLINDRE-SILICONE-micro.png" alt="Silicone Poli" class="d-block mb-2 rounded-image mx-auto">
+                                                            <input class="form-check-input" type="radio" name="cylindre" id="silicone-micro">
+                                                            <label class="form-check-label" for="silicone-micro">Connexion silicone & Finition microbillée</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row pt-3">
+                                                    <div class="col">
+                                                        <div>
+                                                            <label for="valeur" class="form-label">Ø ext. du biberon d'entrée :</label>
+                                                            <input type="number" class="form-control" id="valeur" placeholder="en mm">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="mb-3">
+                                                            <label for="valeur" class="form-label">Ø int. du biberon d'entrée' :</label>
+                                                            <input type="number" class="form-control" id="valeur" placeholder="en mm">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Accordéon 3 (Indépendant) -->
+                                <div class="tab-pane-content p-3 accordion" id="accordionExampleTwo">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingTwo">
+                                            <button class="accordion-button custom-accordion-button p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                                Revêtement du piston et du boisseau
+                                            </button>
+                                        </h2>
+                                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+                                            <div class="accordion-body">
+                                                <div class="row select">
+                                                    <div class="mb-3">
+                                                        <label for="optionsSelect" class="form-label">Revêtements du piston</label>
+                                                        <select class="form-select" id="optionsSelect" aria-label="Sélectionner une option">
+                                                          <option selected>Chrome dur</option>
+                                                          <option value="1">Chrome + CRN </option>
+                                                        </select>
+                                                      </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                
+                            <!-- Tab 2: Nos Innovations -->
+                            <div class="tab-pane fade" id="innovations" role="tabpanel" aria-labelledby="innovations-tab">
+
+
+                            <!-- Accordéon 4 (Indépendant) -->
+                            <div class="tab-pane-content p-3 accordion" id="accordionExampleFour">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingFour">
+                                        <button class="accordion-button custom-accordion-button p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                            Version CIP/SIP
+                                        </button>
+                                    </h2>
+                                    <div id="collapseFour" class="accordion-collapse collapse show" aria-labelledby="headingFour">
+                                        <div class="accordion-body">
+                                            <div class="row select">
+                                                <div class="col-8 d-flex justify-content-center align-items-center">
+                                                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quia, tempore rerum suscipit ipsa quas quaerat culpa illo veritatis in repellat et, aspernatur officia necessitatibus rem similique beatae, enim quisquam! Consectetur.</p>
+
+                                                </div>
+                                                <div class="col-4 d-flex justify-content-center align-items-center">
+                                                    <img src="CIP-SIP.png" alt="" class="d-block mb-2 rounded-image mx-auto">
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Accordéon 5 (Indépendant) -->
+                            <div class="tab-pane-content p-3 accordion" id="accordionExampleFive">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingFour">
+                                        <button class="accordion-button custom-accordion-button p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                            Version Long guidage
+                                        </button>
+                                    </h2>
+                                    <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive">
+                                        <div class="accordion-body">
+                                            <div class="row select">
+                                                <div class="col-4 d-flex justify-content-center align-items-center">
+                                                    <img src="CIP-SIP.png" alt="" class="d-block mb-2 rounded-image mx-auto">
+                                                </div>
+                                                <div class="col-8 d-flex justify-content-center align-items-center">
+                                                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quia, tempore rerum suscipit ipsa quas quaerat culpa illo veritatis in repellat et, aspernatur officia necessitatibus rem similique beatae, enim quisquam! Consectetur.</p>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane-content p-3">
+                                <div class="row">
+                                    <div class="d-flex justify-content-center align-items-center">
+
+                                    <!-- Bouton de téléchargement -->
+                                    <a href="DOCUMENTATION-POMPE-SYNTEGON.pdf" class="btn btn-dark" download="DOCUMENTATION-POMPE-SYNTEGON.pdf">
+                                        Télécharger notre brochure commerciale
+                                    </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                
+        </div>
+        </div>
+    </section>
+
+
+
+<!-- Main JS -->
+<script src="script.js"></script>
+
+<!-- Charger Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Loads <model-viewer> for browsers: -->
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+
+  </body>
+</html>
